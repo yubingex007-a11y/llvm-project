@@ -47,10 +47,8 @@ def _libc_library(name, hidden, copts = [], deps = [], **kwargs):
 # A convenience function which should be used to list all libc support libraries.
 # Any library which does not define a public function should be listed with
 # libc_support_library.
-def libc_support_library(name, copts = None, **kwargs):
-    copts = copts or []
-    copts = copts + ["-O3", "-fno-builtin", "-fno-lax-vector-conversions"]
-    _libc_library(name = name, copts = copts, hidden = False, **kwargs)
+def libc_support_library(name, **kwargs):
+    _libc_library(name = name, hidden = False, **kwargs)
 
 def libc_function(
         name,
@@ -83,7 +81,12 @@ def libc_function(
     # We use the explicit equals pattern here because append and += mutate the
     # original list, where this creates a new list and stores it in deps.
     copts = copts or []
-    copts = copts + ["-O3", "-fno-builtin", "-fno-lax-vector-conversions"]
+    copts = copts + [
+      "-O3",
+      "-fno-builtin",
+      "-fno-lax-vector-conversions",
+      "-ftrivial-auto-var-init=pattern"
+    ]
 
     # We compile the code twice, the first target is suffixed with ".__internal__" and contains the
     # C++ functions in the "LIBC_NAMESPACE" namespace. This allows us to test the function in the
@@ -141,7 +144,6 @@ def libc_math_function(
         ":__support_fputil_division_and_remainder_operations",
         ":__support_fputil_fenv_impl",
         ":__support_fputil_fp_bits",
-        ":__support_fputil_float_properties",
         ":__support_fputil_hypot",
         ":__support_fputil_manipulation_functions",
         ":__support_fputil_nearest_integer_operations",

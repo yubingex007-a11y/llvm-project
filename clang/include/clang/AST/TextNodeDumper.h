@@ -252,6 +252,8 @@ public:
   void VisitGotoStmt(const GotoStmt *Node);
   void VisitCaseStmt(const CaseStmt *Node);
   void VisitReturnStmt(const ReturnStmt *Node);
+  void VisitCoawaitExpr(const CoawaitExpr *Node);
+  void VisitCoreturnStmt(const CoreturnStmt *Node);
   void VisitCompoundStmt(const CompoundStmt *Node);
   void VisitConstantExpr(const ConstantExpr *Node);
   void VisitCallExpr(const CallExpr *Node);
@@ -289,6 +291,8 @@ public:
   void VisitTypeTraitExpr(const TypeTraitExpr *Node);
   void VisitArrayTypeTraitExpr(const ArrayTypeTraitExpr *Node);
   void VisitExpressionTraitExpr(const ExpressionTraitExpr *Node);
+  void VisitCXXDefaultArgExpr(const CXXDefaultArgExpr *Node);
+  void VisitCXXDefaultInitExpr(const CXXDefaultInitExpr *Node);
   void VisitMaterializeTemporaryExpr(const MaterializeTemporaryExpr *Node);
   void VisitExprWithCleanups(const ExprWithCleanups *Node);
   void VisitUnresolvedLookupExpr(const UnresolvedLookupExpr *Node);

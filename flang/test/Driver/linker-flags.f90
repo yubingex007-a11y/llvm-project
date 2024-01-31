@@ -11,6 +11,7 @@
 ! RUN: %flang -### --target=x86_64-unknown-dragonfly %S/Inputs/hello.f90 2>&1 | FileCheck %s --check-prefixes=CHECK,UNIX
 ! RUN: %flang -### --target=x86_64-unknown-haiku %S/Inputs/hello.f90 2>&1 | FileCheck %s --check-prefixes=CHECK,HAIKU
 ! RUN: %flang -### --target=x86_64-windows-gnu %S/Inputs/hello.f90 2>&1 | FileCheck %s --check-prefixes=CHECK,MINGW
+! RUN: %flang -### --target=aarch64-unknown-linux-gnu %S/Inputs/hello.f90 -lFortran_main 2>&1 | FileCheck %s --check-prefixes=DEPRECATED
 
 ! NOTE: Clang's driver library, clangDriver, usually adds 'oldnames' on Windows,
 !       but it is not needed when compiling Fortran code and they might bring in
@@ -28,7 +29,7 @@
 !       executable and may find the GNU linker from MinGW or Cygwin.
 ! UNIX-LABEL:  "{{.*}}ld{{(\.exe)?}}"
 ! UNIX-SAME: "[[object_file]]"
-! UNIX-SAME: "-lFortran_main" "-lFortranRuntime" "-lFortranDecimal" "-lm"
+! UNIX-SAME: "--whole-archive" "-lFortran_main" "--no-whole-archive" "-lFortranRuntime" "-lFortranDecimal" "-lm"
 
 ! DARWIN-LABEL:  "{{.*}}ld{{(\.exe)?}}"
 ! DARWIN-SAME: "[[object_file]]"
@@ -38,7 +39,7 @@
 
 ! HAIKU-LABEL:  "{{.*}}ld{{(\.exe)?}}"
 ! HAIKU-SAME: "[[object_file]]"
-! HAIKU-SAME: "-lFortran_main" "-lFortranRuntime" "-lFortranDecimal"
+! HAIKU-SAME: "--whole-archive" "-lFortran_main" "--no-whole-archive" "-lFortranRuntime" "-lFortranDecimal"
 
 ! MINGW-LABEL:  "{{.*}}ld{{(\.exe)?}}"
 ! MINGW-SAME: "[[object_file]]"
@@ -53,3 +54,6 @@
 ! MSVC-LABEL: link
 ! MSVC-SAME: /subsystem:console
 ! MSVC-SAME: "[[object_file]]"
+
+! Check that we warn when using -lFortran_main
+! DEPRECATED: warning: argument '-lFortran_main' is deprecated, see the Flang driver documentation for correct usage [-Wdeprecated]
